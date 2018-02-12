@@ -31,9 +31,6 @@ def extract_new_train(v_current, X_labeled, y, X_unlabeled, pred_y):
 
     return new_X, new_y
 
-
-
-
 def train_model(base_model, X, y):
     model = deepcopy(base_model)
     model.fit(X,y)

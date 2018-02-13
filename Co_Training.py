@@ -14,7 +14,7 @@ class Co_Training_Classifier:
         self.h1=None
         self.h2=None
 
-    def fit(self, labeled_X, labeled_y, unlabeled_X, view1_features, view2_features):
+    def fit(self, labeled_X, unlabeled_X, labeled_y, view1_features, view2_features):
 
         self.view1_features = view1_features
         self.view2_features = view2_features

@@ -20,7 +20,7 @@ class SP_coTrain:
         self.views=None
 
 
-    def fit(self, X_labeled, X_unlabeled, y, views):
+    def fit(self, X_labeled, X_unlabeled, y, view1,view2):
         """
         Trains the model
 
@@ -30,7 +30,7 @@ class SP_coTrain:
         :param views: Array of features list for each of the views
         """
         #set views (the features for each view)
-        self.views=views
+        self.views=[view1,view2]
 
         # Extract number of classes
         num_classes = np.unique(y)

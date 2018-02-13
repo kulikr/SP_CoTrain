@@ -64,8 +64,17 @@ class SP_coTrain:
                 self.add_rate += 0.5 ########******######
                 v_vectors[view] = Utils.extract_v_vector(pred_probs[view], y, self.add_rate)
 
-    def predict(self):
-        pass
+    def predict(self,X):
+        res1 = self.trained_models[0].predict_proba(X[:, self.views[0]])
+        res2 = self.trained_models[1].predict_proba(X[:, self.views[1]])
+        classes = self.trained_models[0].classes_
+        res = []
+        for i in range(len(res1)):
+            if res1[i][0] + res2[i][0] > res1[i][1] + res2[i][1]:
+                res.append(classes[0])
+            else:
+                res.append(classes[1])
+        return res
 
     def get_params(self):
         pass
@@ -73,6 +82,4 @@ class SP_coTrain:
     def set_params(self):
         pass
 
-    def spaco(model_names,data,save_paths,iter_step=1,gamma=0.3,train_ratio=0.2):
-        pass
 

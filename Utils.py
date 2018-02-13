@@ -35,8 +35,8 @@ def extract_new_train(v_current, X_labeled, y, X_unlabeled, pred_y):
         if flag:
             to_add_X.append(X_unlabeled[i])
             to_add_y.append(pred_y[i])
-    new_X = X_labeled + to_add_X
-    new_y = y + to_add_y
+    new_X = np.append(X_labeled,np.array(to_add_X),axis=0)
+    new_y = np.append(y , np.array(to_add_y),axis=0)
 
     return new_X, new_y
 

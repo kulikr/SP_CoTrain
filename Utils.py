@@ -66,7 +66,7 @@ def get_model(base_line, base_model, X_unlabeled):
         K, G = calc_G_and_k(X_unlabeled.shape[0])
         model = Co_Training_Classifier(base_model=base_model, K=K, G=G)
     elif base_line == "base":
-        model = Base([base_model, base_model])
+        model = Base([deepcopy(base_model), deepcopy(base_model)])
 
     return model
 

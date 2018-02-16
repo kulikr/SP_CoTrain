@@ -1,13 +1,15 @@
 import Utils
+import data_utils as du
 import re
 import os
+import numpy as np
 from datetime import datetime
 import json
 
 from sklearn.svm import SVC
 from sklearn.utils import shuffle
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import auc, accuracy_score
+from sklearn.metrics import roc_auc_score, accuracy_score
 
 BASE_MODELS = {"SVC": SVC(probability=True),
                "RandomForest": RandomForestClassifier()}
@@ -32,7 +34,9 @@ def evaluate_model(base_line, base_model, X_labeled, X_unlabeled, y_labeled, X_t
     predict_time = (end - start).total_seconds()
 
     # calculate accuracy and auc
-    auc_score = auc(y_test, y_pred)
+    y_pred=np.array(y_pred)
+    auc_score = roc_auc_score(y_test, y_pred)
+
     acc = accuracy_score(y_test, y_pred)
 
     return fit_time, predict_time, auc_score, acc
@@ -40,7 +44,7 @@ def evaluate_model(base_line, base_model, X_labeled, X_unlabeled, y_labeled, X_t
 
 # Evaluates the algorithm with 10 fold cv each time the train is shuffled and splitted randomly to train and test.
 def cross_validation(dir_path, file_name, cv=10, base_model="RandomForest", labeled_split=0.2):
-    X, y, view1, view2 = Utils.extract_data(dir_path + '/' + file_name, file_name)
+    X, y, view1, view2 = du.extract_data(dir_path + '/' + file_name, file_name)
 
     res_spaco = []
     res_co = []
@@ -49,7 +53,7 @@ def cross_validation(dir_path, file_name, cv=10, base_model="RandomForest", labe
     for i in range(cv):
         print("CV: " + str(i))
         X, y = shuffle(X, y)
-        X_labeled, X_unlabeled, y_labeled, X_test, y_test = Utils.split_data(X, y, train_test_split=0.8,
+        X_labeled, X_unlabeled, y_labeled, X_test, y_test = du.split_data(X, y, train_test_split=0.8,
                                                                              labeled_unlabeled_split=labeled_split)
 
         res_spaco.append(evaluate_model("spaco",base_model,X_labeled, X_unlabeled, y_labeled, X_test, y_test, view1, view2))

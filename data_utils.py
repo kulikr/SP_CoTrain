@@ -16,7 +16,7 @@ def split_data(X, y, train_test_split=0.7, labeled_unlabeled_split=0.6):
 
 def extract_data(file_path, file_name):
     if(file_name=="nba_train.csv"):
-        data = np.genfromtxt(file_path+"/"+file_name, delimiter=',')
+        data = np.genfromtxt(file_path, delimiter=',')
         X=data[1:,1:-1]
         X = X.astype(np.float32)
         y=data[1:,-1]
@@ -25,7 +25,7 @@ def extract_data(file_path, file_name):
         view2_features=[i for i in range(len(X[0])) if i not in view1_features]
 
     if(file_name=="news_train.csv"):
-        data = np.genfromtxt(file_path+"/"+file_name, delimiter=',')
+        data = np.genfromtxt(file_path, delimiter=',')
         X=data[1:,1:-1]
         X = X.astype(np.float32)
         y=data[1:,-1]
@@ -38,7 +38,7 @@ def extract_data(file_path, file_name):
         view2_features = [i for i in range(len(X[0])) if i not in view1_features]
 
     if(file_name=="brest_cancer_train.csv"):
-        data = np.genfromtxt(file_path+"/"+file_name, delimiter=',')
+        data = np.genfromtxt(file_path, delimiter=',')
         X=data[:,1:-1]
         X = X.astype(np.float32)
         y=data[:,-1]
@@ -48,7 +48,7 @@ def extract_data(file_path, file_name):
         view2_features = [i for i in range(len(X[0])) if i not in view1_features]
 
     if(file_name=="mushrooms_train.csv"):
-        data = pd.read_csv(file_path+"/"+file_name)
+        data = pd.read_csv(file_path)
         encoder = LabelEncoder()
         for column_name, column_type in data.dtypes.iteritems():
             data[column_name]=encoder.fit_transform(data[column_name])
@@ -59,7 +59,7 @@ def extract_data(file_path, file_name):
         view1_features=[i for i in range(0,len(X[0]),2)]
         view2_features = [i for i in range(len(X[0])) if i not in view1_features]
 
-    if (file_name == "income_train.csv"):
+    if file_name == "income_train.csv":
         data = pd.read_csv(file_path)
         encoder = LabelEncoder()
         onehotencoder = OneHotEncoder()
@@ -84,8 +84,8 @@ def extract_data(file_path, file_name):
         view1_features = [i for i in range(0, len(X[0]), 2)]
         view2_features = [i for i in range(len(X[0])) if i not in view1_features]
 
-    if(file_name=="student_mat.csv"):
-        data = pd.read_csv(file_path+"/"+file_name)
+    if file_name == "student-mat.csv" or file_name == "student-por.csv":
+        data = pd.read_csv(file_path)
         encoder = LabelEncoder()
 
         # to classification
@@ -97,31 +97,53 @@ def extract_data(file_path, file_name):
 
         X=data[:,:30]
         y=data[:,32]
-        y[y>10]=1
         y[y<=10]=0
+        y[y>10]=1
+
+        view1_features=[1,2,3,4,5,6,7,8,9,11,17,18,19,22,23,28]
+        view2_features = [i for i in range(30) if i not in view1_features]
 
 
         view1_features=[i for i in range(0,len(X[0]),2)]
         view2_features = [i for i in range(len(X[0])) if i not in view1_features]
 
-    if(file_name=="student-por.csv"):
-        data = pd.read_csv(file_path+"/"+file_name)
-        encoder = LabelEncoder()
-
-        # to classification
-        for column_name, column_type in data.dtypes.iteritems():
-            if(column_type==object):
-                data[column_name]=encoder.fit_transform(data[column_name])
+    if file_name == "3_10principal_components.csv":
+        data = pd.read_csv(file_path)
 
         data=np.array(data)
 
-        X=data[:,:30]
-        y=data[:,32]
-        y[y>10]=1
-        y[y<=10]=0
+        X=data[1:,:-1]
+        y=data[1:,-1]
 
+        view1_features=[1,2,3,4,5]
+        view2_features = [i for i in range(len(X[0])) if i not in view1_features]
 
-        view1_features=[i for i in range(0,len(X[0]),2)]
+    if file_name == "page-block.csv":
+        data = pd.read_csv(file_path)
+
+        data=np.array(data)
+
+        X=data[:,:-1]
+        y=data[:,-1]
+
+        y[y==" positive"]=1
+        y[y!=1]=0
+
+        view1_features=[0,1,4,5]
+        view2_features = [i for i in range(len(X[0])) if i not in view1_features]
+
+    if file_name == "yeast1.csv":
+        data = pd.read_csv(file_path)
+
+        data=np.array(data)
+
+        X=data[:,:-1]
+        y=data[:,-1]
+
+        y[y==" positive"]=1
+        y[y!=1]=0
+
+        view1_features=[0,1,2,3]
         view2_features = [i for i in range(len(X[0])) if i not in view1_features]
 
     X=np.nan_to_num(X)

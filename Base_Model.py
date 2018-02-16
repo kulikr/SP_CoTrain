@@ -1,18 +1,21 @@
 import numpy as np
 import Utils
+from copy import deepcopy
 
 
 class Base:
 
     def __init__(self, base_models):
-        self.models = base_models
+        self.models=[None,None]
+        self.models[0] = deepcopy(base_models[0])
+        self.models[1] = deepcopy(base_models[1])
 
-    def fit(self, X_labeled, y_labeled, X_unlabeled, view1, view2):
+    def fit(self, X_labeled, X_unlabeled,y_labeled, view1, view2):
         # set views (the features for each view)
         self.views = [view1,view2]
 
-        for view in range(len(views)):
-            self.models[view]=self.models[view].fit(X_labeled[:,views[view]],y)
+        for view in range(len(self.views)):
+            self.models[view]=self.models[view].fit(X_labeled[:, self.views[view]],y_labeled)
 
 
     def predict(self,X):

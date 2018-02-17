@@ -16,6 +16,7 @@ class SP_coTrain:
         self.trained_models=[None, None]
         self.num_of_iters=num_of_iters
         self.add_rate=add_rate
+        self.initial_add_rate=add_rate
         self.gamma=gamma
         self.views=None
 
@@ -38,14 +39,13 @@ class SP_coTrain:
         # init the models
         pred_probs = []
         v_vectors = []
-
         for view in range(2):
             self.trained_models[view] = Utils.train_model(self.base_models[view], X_labeled[:,self.views[view]] ,y)
             pred_probs.append(Utils.predict_proba(self.trained_models[view],X_unlabeled[:,self.views[view]]))
             v_vectors.append(Utils.extract_v_vector(pred_probs[view], y, self.add_rate))
         pred_y = np.argmax(sum(pred_probs), axis=1)
 
-
+        prev_v = deepcopy(v_vectors)
         for i in range(self.num_of_iters):
             for view in range(2):
 
@@ -63,8 +63,19 @@ class SP_coTrain:
                 pred_y = np.argmax(sum(pred_probs), axis=1)
 
                 # update current view for next view
-                self.add_rate += 0.2
                 v_vectors[view] = Utils.extract_v_vector(pred_probs[view], y, self.add_rate)
+
+            self.add_rate += self.initial_add_rate
+            print ("Iter Num "+str(i))
+            print("Add rate: " + str(self.add_rate))
+            print("\n")
+            for k in range(len(v_vectors[0])):
+                if prev_v[0][k]==True and v_vectors[0][k]==False:
+                    print("vector 0 changed in instance: "+str(k))
+            for k in range(len(v_vectors[1])):
+                if prev_v[1][k]==True and v_vectors[1][k]==False:
+                    print("vector 1 changed in instance: "+str(k))
+            prev_v=deepcopy(v_vectors)
 
     def predict(self,X):
         res1 = self.trained_models[0].predict_proba(X[:, self.views[0]])

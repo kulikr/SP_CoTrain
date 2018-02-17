@@ -1,6 +1,6 @@
 import numpy as np
 import Utils
-from copy import deepcopy
+
 class SP_coTrain:
 
     def __init__(self, base_models, num_of_iters=8, add_rate=0.5, gamma=0.5):
@@ -16,6 +16,7 @@ class SP_coTrain:
         self.trained_models=[None, None]
         self.num_of_iters=num_of_iters
         self.add_rate=add_rate
+        self.initial_add_rate=add_rate
         self.gamma=gamma
         self.views=None
 
@@ -38,13 +39,11 @@ class SP_coTrain:
         # init the models
         pred_probs = []
         v_vectors = []
-
         for view in range(2):
             self.trained_models[view] = Utils.train_model(self.base_models[view], X_labeled[:,self.views[view]] ,y)
             pred_probs.append(Utils.predict_proba(self.trained_models[view],X_unlabeled[:,self.views[view]]))
-            v_vectors.append(Utils.extract_v_vector(pred_probs[view], y, self.add_rate))
+            v_vectors.append(Utils.extract_v_vector_ours(pred_probs[view], y, self.add_rate))
         pred_y = np.argmax(sum(pred_probs), axis=1)
-
 
         for i in range(self.num_of_iters):
             for view in range(2):
@@ -52,7 +51,7 @@ class SP_coTrain:
                 # update the current view with the other view v-vector
                 v_other = v_vectors[1 - view]
                 pred_probs[view][v_other, pred_y[v_other]] += self.gamma
-                v_current = Utils.extract_v_vector(pred_probs[view], y, self.add_rate)
+                v_current = Utils.extract_v_vector_ours(pred_probs[view], y, self.add_rate)
 
                 # update current view and current model
                 new_train_data,new_y = Utils.extract_new_train(v_current, X_labeled, y, X_unlabeled, pred_y)
@@ -63,8 +62,8 @@ class SP_coTrain:
                 pred_y = np.argmax(sum(pred_probs), axis=1)
 
                 # update current view for next view
-                self.add_rate += 0.2
-                v_vectors[view] = Utils.extract_v_vector(pred_probs[view], y, self.add_rate)
+                self.add_rate += 0.02
+                v_vectors[view] = Utils.extract_v_vector_ours(pred_probs[view], y, self.add_rate)
 
     def predict(self,X):
         res1 = self.trained_models[0].predict_proba(X[:, self.views[0]])

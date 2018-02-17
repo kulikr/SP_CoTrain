@@ -151,5 +151,23 @@ def extract_data(file_path, file_name):
         view1_features=[0,1,2,3]
         view2_features = [i for i in range(len(X[0])) if i not in view1_features]
 
-    X=np.nan_to_num(X)
+    if file_name == "kobe_edited.csv":
+
+        data = pd.read_csv(file_path)
+        data =data.dropna(axis=0, how='any')
+
+        encoder = LabelEncoder()
+        for column_name, column_type in data.dtypes.iteritems():
+            if(column_type==object):
+                data[column_name]=encoder.fit_transform(data[column_name])
+
+        data=np.array(data)
+        X=data[:,:-1]
+        y=data[:,-1]
+
+
+        view1_features=[0,1,2,3,4,11,12,13,14,15]
+        view2_features = [i for i in range(len(X[0])) if i not in view1_features]
+
+
     return X, y, view1_features, view2_features

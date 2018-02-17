@@ -63,7 +63,7 @@ def cross_validation(dir_path, file_name, cv=10, base_model="RandomForest", labe
     res_spaco = []
     res_co = []
     res_base = []
-    res__reg_base = []
+    res_reg_base = []
 
     for i in range(cv):
         print("CV: " + str(i))
@@ -82,11 +82,11 @@ def cross_validation(dir_path, file_name, cv=10, base_model="RandomForest", labe
             evaluate_model("base", base_model, X_labeled, X_unlabeled, y_labeled, X_test, y_test, view1, view2,
                            labeled_rate))
 
-        res_base.append(
+        res_reg_base.append(
             evaluate_model("reg_base", base_model, X_labeled, X_unlabeled, y_labeled, X_test, y_test, view1, view2,
                            labeled_rate))
 
-    return res_spaco, res_co, res_base, res__reg_base
+    return res_spaco, res_co, res_base, res_reg_base
 
 
 # Runs the experiment on the given data
@@ -104,7 +104,7 @@ def run_experiment(dir_path, file_name):
 
         for labled_ratio in LABELED_RATIOS:
             res_spaco[base_model][str(labled_ratio)], res_co[base_model][str(labled_ratio)], res_base[base_model][
-                str(labled_ratio)], res_spaco[base_model][str(labled_ratio)] = cross_validation(dir_path, file_name, 10,
+                str(labled_ratio)], res_reg_base[base_model][str(labled_ratio)] = cross_validation(dir_path, file_name, 10,
                                                                                                 base_model,
                                                                                                 labled_ratio)
 

@@ -67,7 +67,7 @@ def calc_G_and_k(unlabeled_size):
 def get_add_rate(labeled_rate,numOfIters):
     return (1-labeled_rate)/((numOfIters+1)*labeled_rate)
 
-# return the model instance by given model name
+# Return the model instance by given model name
 def get_model(base_line, base_model, X_unlabeled,labeled_rate):
     model = None
 

@@ -15,6 +15,11 @@ def split_data(X, y, train_test_split=0.7, labeled_unlabeled_split=0.6):
     return X_labeled, X_unlabeled, y_labeled, X_test, y_test
 
 def extract_data(file_path, file_name):
+    X=None
+    view1_features=None
+    view2_features=None
+    y=None
+
     if(file_name=="nba_train.csv"):
         data = np.genfromtxt(file_path, delimiter=',')
         X=data[1:,1:-1]
